@@ -25,7 +25,7 @@ public class MainActivity extends Activity implements OnClickListener {
     //final String LOG_TAG = "myLogs";
 
     Button btnAdd, btnRead, btnClear, btnUpd, btnDel;
-    ImageButton btnRight, btnLeft;
+    ImageButton btnRight, btnLeft, btnMenu;
     EditText etName, etTip, etID;
 
     DBHelper dbHelper;
@@ -60,6 +60,9 @@ public class MainActivity extends Activity implements OnClickListener {
 
         btnLeft = (ImageButton) findViewById(R.id.btnLeft);
         btnLeft.setOnClickListener(this);
+
+        btnMenu = (ImageButton) findViewById(R.id.btnMenu);
+        btnMenu.setOnClickListener(this);
 
         etName = (EditText) findViewById(R.id.etName);
         etTip = (EditText) findViewById(R.id.etTip);
@@ -207,16 +210,25 @@ public class MainActivity extends Activity implements OnClickListener {
                 break;
             case R.id.btnDel:
                 toast = Toast.makeText(getApplicationContext(),
-                        "Заметка Удалена!", Toast.LENGTH_SHORT);
+                    "Заметка Удалена!", Toast.LENGTH_SHORT);
                 toast.show();
                 // удаляем по id
                 int delCount = db.delete("mytable", "id = " + id, null);
-                break;
+            break;
+            case R.id.btnMenu:
+                Intent intent = new Intent(this, TipSelectActivity.class);
+
+                //intent.putExtra("name", name);
+                //intent.putExtra("id", id);
+                //intent.putExtra("type", "add");
+                //intent.putExtra("tip", tip);
+                startActivityForResult(intent, 1);
+                //startActivityForResult(intent, 1);
         }
         dbHelper.close();
     }
 
-    @Override
+    //@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
         String retname = data.getStringExtra("name");
