@@ -90,6 +90,7 @@ public class TipAdapter extends BaseAdapter {
     }
 
     // обработчик для чекбоксов
+
     OnCheckedChangeListener myCheckChangeList = new OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton buttonView,
                                      boolean isChecked) {

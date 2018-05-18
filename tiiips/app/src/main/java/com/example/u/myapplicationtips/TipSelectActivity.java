@@ -25,7 +25,7 @@ import com.example.u.myapplicationtips.R;
 
 import java.util.ArrayList;
 
-public class TipSelectActivity extends Activity implements View.OnClickListener {
+public class TipSelectActivity extends Activity implements AdapterView.OnItemClickListener {
     DBHelper dbHelper;
     //LinearLayout linLayout;
     LayoutInflater ltInflater;
@@ -50,34 +50,58 @@ public class TipSelectActivity extends Activity implements View.OnClickListener 
 
         // настраиваем список
         lvMain = (ListView) findViewById(R.id.lvMain);
+
         lvMain.setAdapter(boxAdapter);
 
+        lvMain.setOnItemClickListener(this);
+
         btnDelete = (Button) findViewById(R.id.btnDel);
-        btnDelete.setOnClickListener(this);
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast toast;
+
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+                switch(v.getId()) {
+                    case R.id.btnDel:
+                        toast = Toast.makeText(getApplicationContext(),
+                                "Заметки Удалены!", Toast.LENGTH_SHORT);
+                        toast.show();
+                        ArrayList<Tip> box = boxAdapter.getBox();
+                        // удаляем по id
+                        for (int i = 0; i < box.size(); i++) {
+                            int delCount = db.delete("mytable", "id = " + box.get(i).id, null);
+                        }
+                        fillData();
+                        break;
+                }//if (type == "read") {
+                //TODO
+                //}*/
+            }
+        });
 
 
         //ltInflater = getLayoutInflater();
-        lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                Toast toast;
-                toast = Toast.makeText(getApplicationContext(),
-                        "Заметка записана!", Toast.LENGTH_SHORT);
-                toast.show();
-                Tip clickedtip = (Tip)parent.getItemAtPosition(position);
-                ContentValues cv = new ContentValues();
 
-                Intent intent = new Intent();
-                intent.putExtra("name", clickedtip.name);
-                intent.putExtra("tip", clickedtip.tip);
-                intent.putExtra("id", clickedtip.id);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
     }
+
+    public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+            Toast toast;
+            toast = Toast.makeText(getApplicationContext(),
+                    "Заметка записана!", Toast.LENGTH_SHORT);
+            toast.show();
+            Tip clickedtip = (Tip)boxAdapter.getItem(position);
+            ContentValues cv = new ContentValues();
+
+            Intent intent = new Intent();
+            intent.putExtra("name", clickedtip.name);
+            intent.putExtra("tip", clickedtip.tip);
+            intent.putExtra("id", clickedtip.id);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
+
 
     private void fillData() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -100,30 +124,7 @@ public class TipSelectActivity extends Activity implements View.OnClickListener 
             c.close();
     }
 
-    public void onClick(View v) {
-        ContentValues cv = new ContentValues();
 
-        Toast toast;
-
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        switch(v.getId()) {
-            case R.id.btnDel:
-                toast = Toast.makeText(getApplicationContext(),
-                        "Заметки Удалены!", Toast.LENGTH_SHORT);
-                toast.show();
-                ArrayList<Tip> box = boxAdapter.getBox();
-                // удаляем по id
-                for (int i = 0; i < box.size(); i++) {
-                    int delCount = db.delete("mytable", "id = " + box.get(i).id, null);
-                }
-                fillData();
-                break;
-        }
-        //if (type == "read") {
-        //TODO
-        //}*/
-    }
 
     class DBHelper extends SQLiteOpenHelper {
 
@@ -145,7 +146,7 @@ public class TipSelectActivity extends Activity implements View.OnClickListener 
 
         }
     }
-    }
+}
     /*class DBHelper extends SQLiteOpenHelper {
 
         public DBHelper(Context context) {

@@ -233,10 +233,10 @@ public class MainActivity extends Activity implements OnClickListener {
         if (data == null) {return;}
         String retname = data.getStringExtra("name");
         String rettip = data.getStringExtra("tip");
-        String retid = data.getStringExtra("id");
+        int retid = data.getIntExtra("id", -1);
         etName.setText(retname);
         etTip.setText(rettip);
-        etTip.setText(retid);
+        etID.setText(String.valueOf(retid));
     }
 
 
